@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://https://fe_confidence.github.io</id>
+    <id>https://https://vonconfidence.github.io</id>
     <title>我的fe生涯</title>
-    <updated>2020-02-21T18:06:45.605Z</updated>
+    <updated>2020-02-21T18:08:26.606Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://https://fe_confidence.github.io"/>
-    <link rel="self" href="https://https://fe_confidence.github.io/atom.xml"/>
+    <link rel="alternate" href="https://https://vonconfidence.github.io"/>
+    <link rel="self" href="https://https://vonconfidence.github.io/atom.xml"/>
     <subtitle>前端萌新</subtitle>
-    <logo>https://https://fe_confidence.github.io/images/avatar.png</logo>
-    <icon>https://https://fe_confidence.github.io/favicon.ico</icon>
+    <logo>https://https://vonconfidence.github.io/images/avatar.png</logo>
+    <icon>https://https://vonconfidence.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 我的fe生涯</rights>
     <entry>
         <title type="html"><![CDATA[Gridea 搭建自己的博客系统]]></title>
-        <id>https://https://fe_confidence.github.io/post/learnGridea/</id>
-        <link href="https://https://fe_confidence.github.io/post/learnGridea/">
+        <id>https://https://vonconfidence.github.io/post/learnGridea/</id>
+        <link href="https://https://vonconfidence.github.io/post/learnGridea/">
         </link>
         <updated>2020-02-21T16:00:00.000Z</updated>
         <content type="html"><![CDATA[<h3 id="gridea-搭建自己的博客系统">Gridea 搭建自己的博客系统</h3>
@@ -28,7 +28,7 @@
 </li>
 <li>
 <p>gridea配置<br>
-<img src="https://https://fe_confidence.github.io/post-images/1582305244298.png" alt="gridea" loading="lazy"></p>
+<img src="https://https://vonconfidence.github.io/post-images/1582305244298.png" alt="gridea" loading="lazy"></p>
 <ul>
 <li>域名: Github Pages 对应的域名 如 https://vonconfidence.github.io 或者 confidence.fe</li>
 <li>仓库: 你的静态文件存放地址, 例如 <strong>账号名称.github.io</strong> (填写上面建立的仓库名称)</li>
@@ -40,7 +40,7 @@
 </ul>
 </li>
 </ul>
-<figure data-type="image" tabindex="1"><img src="https://https://fe_confidence.github.io/post-images/1582305613339.jpg" alt="accessToken" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://https://vonconfidence.github.io/post-images/1582305613339.jpg" alt="accessToken" loading="lazy"></figure>
 </li>
 <li>
 <p>配置好了，检测远程连接没有问题之后，Gridea 就成功和你的 Github Pages 连接了。</p>
@@ -54,7 +54,7 @@
 <li>
 <p>菜单栏目</p>
 <p>菜单会在网页上标题下方显示，初始状态有四个菜单：首页、归档、标签、关于，在网页里可以找到他们的作用。<br>
-<img src="https://https://fe_confidence.github.io/post-images/1582306079380.png" alt="" loading="lazy"></p>
+<img src="https://https://vonconfidence.github.io/post-images/1582306079380.png" alt="" loading="lazy"></p>
 </li>
 <li>
 <p>标签栏目</p>
