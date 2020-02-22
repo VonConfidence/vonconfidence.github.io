@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>typeof的实现原理&amp;应用 | 我的fe生涯</title>
+<meta name="description" content="前端萌新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://vonconfidence.github.io/favicon.ico?v=1582384751709">
+<link rel="stylesheet" href="https://vonconfidence.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://vonconfidence.github.io">
+        <img src="https://vonconfidence.github.io/images/avatar.png?v=1582384751709" class="site-logo">
+        <h1 class="site-title">我的fe生涯</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      前端萌新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/VonConfidence" target="_blank">VonConfidence</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">typeof的实现原理&amp;应用</h2>
+            <div class="post-date">2020-02-22</div>
+            
+            <div class="post-content">
+              <h4 id="typeof的实现原理">typeof的实现原理</h4>
+<ol>
+<li>
+<p>typeof 一般被用于判断一个变量的类型，我们可以利用 typeof 来判断<strong>number,string, object, boolean, function, undefined, symbol</strong>这七种类型</p>
+</li>
+<li>
+<p>typeof 在判断一个 object的数据的时候只能告诉我们这个数据是 object, 而不能细致的具体到是<strong>哪一种 object</strong></p>
+<pre><code class="language-js">let s = new String('abc');
+typeof s === 'object'// true
+s instanceof String // true
+
+typeof null === 'object'
+typeof undefined === 'undefined'
+</code></pre>
+</li>
+<li>
+<p>js 在底层存储变量的时候，会在变量的<strong>机器码的低位1-3位</strong>存储其类型信息</p>
+<ul>
+<li>000：对象</li>
+<li>010：浮点数</li>
+<li>100：字符串</li>
+<li>110: 布尔值</li>
+<li>1：整数</li>
+</ul>
+<p>but, 对于 undefined 和 null 来说，这两个值的信息存储是有点特殊的。</p>
+<p>null：所有机器码均为0</p>
+<p>undefined：用 −2^30 整数来表示</p>
+<p>所以，typeof 在判断 null 的时候就出现问题了，由于<strong>null</strong> 的所有机器码均为<strong>0</strong>，因此直接被当做了<strong>对象</strong>来看待。</p>
+<pre><code class="language-js">null instanceof null // TypeError: Right-hand side of 'instanceof' is not an object
+/*
+ null 直接被判断为不是 object，这也是 JavaScript 的历史遗留bug
+*/
+</code></pre>
+<p>因此在用 typeof 来判断变量类型的时候，我们需要注意，最好是用 typeof 来判断基本数据类型（包括<strong>symbol</strong>），避免对 null 的判断。</p>
+</li>
+<li>
+<p>有一个不错的判断类型的方法，就是Object.prototype.toString，我们可以利用这个方法来对一个变量的类型来进行比较准确的判断</p>
+<pre><code class="language-js">Object.prototype.toString.call(1) // &quot;[object Number]&quot;
+Object.prototype.toString.call('hi') // &quot;[object String]&quot;
+
+Object.prototype.toString.call({a:'hi'}) // &quot;[object Object]&quot;
+
+Object.prototype.toString.call([1,'a']) // &quot;[object Array]&quot;
+
+Object.prototype.toString.call(true) // &quot;[object Boolean]&quot;
+
+Object.prototype.toString.call(() =&gt; {}) // &quot;[object Function]&quot;
+
+Object.prototype.toString.call(null) // &quot;[object Null]&quot;
+
+Object.prototype.toString.call(undefined) // &quot;[object Undefined]&quot;
+
+Object.prototype.toString.call(Symbol(1)) // &quot;[object Symbol]&quot;
+
+</code></pre>
+</li>
+</ol>
+<h4 id="typeof的用途">typeof的用途</h4>
+<ol>
+<li>
+<p>检查一个变量是否存在，是否有值, 下面两种情况返回undefined</p>
+<ul>
+<li>变量没有被声明</li>
+<li>变量的值是 undefined</li>
+</ul>
+</li>
+<li>
+<p>在未声明的变量上使用typeof, 直接报错</p>
+</li>
+<li>
+<p>判断一个值不等于 undefined 也不等于 null</p>
+<pre><code class="language-js">function isDefined(x) {
+  return x !== null &amp;&amp; x !== undefined;
+}
+
+// 默认值运算符
+myValue ?? defaultValue
+// 和上述代码一直
+(myValue !== undefined &amp;&amp; myValue !== null) ? myValue : defaultValue
+// 或者
+myValue ??= defaultValue
+// 上面的简化
+myValue = myValue ?? defaultValue
+</code></pre>
+</li>
+<li>
+<p>区分原始值和对象值</p>
+<pre><code class="language-js">function isObject(x) {
+  return (typeof x === &quot;function&quot;
+      || (typeof x === &quot;object&quot; &amp;&amp; x !== null));
+}
+
+function isObject2(x) {
+  return x === Object(x);
+}
+</code></pre>
+</li>
+<li>
+<p>某个值是否是函数</p>
+<pre><code class="language-js">typeof function () {}  // 'function'
+
+typeof Object.prototype.toString // 'function'
+</code></pre>
+</li>
+</ol>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://vonconfidence.github.io/tag/javascript" class="tag">
+                    javascript
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://vonconfidence.github.io/post/javascript-process-flow">
+                  <h3 class="post-title">
+                    JavaScript的执行机制
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
