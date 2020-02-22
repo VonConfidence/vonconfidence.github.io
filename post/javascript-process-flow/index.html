@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>JavaScript的执行机制 | 我的fe生涯</title>
+<meta name="description" content="前端萌新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://vonconfidence.github.io/favicon.ico?v=1582367157557">
+<link rel="stylesheet" href="https://vonconfidence.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://vonconfidence.github.io">
+        <img src="https://vonconfidence.github.io/images/avatar.png?v=1582367157557" class="site-logo">
+        <h1 class="site-title">我的fe生涯</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      前端萌新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/VonConfidence" target="_blank">VonConfidence</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">JavaScript的执行机制</h2>
+            <div class="post-date">2020-02-22</div>
+            
+            <div class="post-content">
+              <h3 id="javascript的执行机制">javascript的执行机制</h3>
+<ol>
+<li>执行顺序探讨</li>
+</ol>
+<pre><code class="language-js">setTimeout(function(){
+  console.log('定时器开始啦')
+});
+
+new Promise(function(resolve){
+    console.log('马上执行for循环啦');
+    for(var i = 0; i &lt; 10000; i++){
+        i == 99 &amp;&amp; resolve();
+    }
+}).then(function(){
+    console.log('执行then函数啦')
+});
+
+console.log('代码执行结束');
+</code></pre>
+<ol start="2">
+<li>关于javascript</li>
+</ol>
+<ul>
+<li>javascript是一门单线程语言，在最新的HTML5中提出了Web-Worker，但javascript是单线程这一核心仍未改变。</li>
+<li>一切javascript版的<strong>多线程</strong>都是用单线程模拟出来的，一切javascript多线程都是纸老虎！</li>
+</ul>
+<ol start="3">
+<li>javascript的事件循环</li>
+</ol>
+<ul>
+<li>同步任务</li>
+<li>异步任务</li>
+<li>执行机制
+<img src="https://user-gold-cdn.xitu.io/2017/11/21/15fdd88994142347?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="网页渲染执行机制">
+<ul>
+<li>同步和异步任务分别进入不同的执行&quot;场所&quot;，同步的进入主线程，异步的进入Event Table并注册函数。</li>
+<li>当指定的事情完成时，Event Table会将这个函数移入Event Queue。</li>
+<li>主线程内的任务执行完毕为空，会去Event Queue读取对应的函数，进入主线程执行。</li>
+<li>上述过程会不断重复，也就是常说的Event Loop(事件循环)。</li>
+</ul>
+</li>
+<li>怎么知道主线程池执行栈为空<br>
+js引擎存在monitoring process进程，会持续不断的检查主线程执行栈是否为空，一旦为空，就会去Event Queue那里检查是否有等待被调用的函数。</li>
+<li>代码分析<pre><code class="language-js">console.log('代码执行结束');
+let data = [];
+$.ajax({
+    url:www.javascript.com,
+    data:data,
+    success:() =&gt; {
+        console.log('发送成功!');
+    }
+})
+console.log('代码执行结束');
+</code></pre>
+<ul>
+<li>同步任务执行console.log('代码执行结束')。</li>
+<li>ajax进入<strong>Event Table</strong>，注册回调函数<strong>success</strong>。</li>
+<li>同步执行console.log('代码执行结束')。</li>
+<li>ajax事件完成，回调函数<strong>success</strong>进入<strong>Event Queue</strong>。</li>
+<li>主线程从Event Queue读取回调函数success并执行。</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li>setTimeout
+<ul>
+<li>
+<p>不定时的setTimeout</p>
+<pre><code class="language-js">setTimeout(() =&gt; {
+  task()
+},3000)
+
+sleep(10000000)
+
+/*
+  却发现控制台执行task()需要的时间远远超过3秒，说好的延时三秒
+*/
+</code></pre>
+<ul>
+<li>task()进入<strong>Event Table</strong>并注册,计时开始。</li>
+<li>执行sleep函数，很慢，非常慢，计时仍在继续。</li>
+<li>3秒到了，计时事件timeout完成，task()进入Event Queue，但是sleep也太慢了吧，还没执行完，只好等着。</li>
+<li>sleep终于执行完了，task()终于从Event Queue进入了主线程执行。</li>
+</ul>
+</li>
+<li>
+<p>setTimeout(fn, 0)会立即执行吗<br>
+答案是不会的，<strong>setTimeout(fn,0)</strong> 的含义是，指定某个任务在主线程最早可得的空闲时间执行，意思就是不用再等多少秒了，只要主线程执行栈内的同步任务全部执行完成，栈为空就马上执行。</p>
+<p>关于setTimeout要补充的是，即便主线程为空，0毫秒实际上也是达不到的。根据HTML的标准，最低是4毫秒。有兴趣的同学可以自行了解。</p>
+</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>setInterval
+<ul>
+<li>对于执行顺序来说，setInterval会每隔指定的时间将注册的函数置入Event Queue，如果前面的任务耗时太久，那么同样需要等待。</li>
+<li>对于setInterval(fn,ms)来说，而是每过ms秒，会有fn进入Event Queue。一旦setInterval的回调函数fn执行时间超过了延迟时间ms，那么就完全看不出来有时间间隔了。</li>
+</ul>
+</li>
+</ul>
+<ol start="5">
+<li>
+<p>Promise &amp; Process.nextTick</p>
+<ul>
+<li>process.nextTick(callback)类似node.js版的&quot;setTimeout&quot;，在事件循环的下一次循环中调用 callback 回调函数。</li>
+<li>macro-task(宏任务)：包括整体代码script，setTimeout，setInterval</li>
+<li>micro-task(微任务)：Promise，process.nextTick</li>
+<li>不同类型的任务会进入对应的Event Queue，比如setTimeout和setInterval会进入相同的Event Queue。</li>
+</ul>
+<p>时间循环的顺序: 决定js代码的执行顺序。<br>
+进入整体代码(宏任务)后，开始第一次循环。接着执行所有的微任务。然后再次从宏任务开始，找到其中一个任务队列执行完毕，再执行所有的微任务。</p>
+<pre><code class="language-js">setTimeout(function() {
+    console.log('setTimeout');
+})
+
+new Promise(function(resolve) {
+    console.log('promise');
+}).then(function() {
+    console.log('then');
+})
+
+console.log('console');
+</code></pre>
+<ul>
+<li>这段代码作为宏任务，进入主线程。</li>
+<li>先遇到setTimeout，那么将其回调函数注册后分发到宏任务Event Queue。(注册过程与上同，下文不再描述)</li>
+<li>接下来遇到了Promise，new Promise立即执行，then函数分发到微任务Event Queue。</li>
+<li>遇到console.log()，立即执行。</li>
+<li>好啦，整体代码script作为第一个宏任务执行结束，看看有哪些微任务？我们发现了then在微任务Event Queue里面，执行。</li>
+<li>ok，第一轮事件循环结束了，我们开始第二轮循环，当然要从宏任务Event Queue开始。我们发现了宏任务Event Queue中setTimeout对应的回调函数，立即执行。</li>
+<li>结束。
+<img src="https://user-gold-cdn.xitu.io/2017/11/21/15fdcea13361a1ec?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="宏任务-微任务关系"></li>
+</ul>
+</li>
+<li>
+<p>执行顺序分析</p>
+</li>
+</ol>
+<pre><code class="language-js">console.log('1');
+
+setTimeout(function() {
+    console.log('2');
+    process.nextTick(function() {
+        console.log('3');
+    })
+    new Promise(function(resolve) {
+        console.log('4');
+        resolve();
+    }).then(function() {
+        console.log('5')
+    })
+})
+process.nextTick(function() {
+    console.log('6');
+})
+new Promise(function(resolve) {
+    console.log('7');
+    resolve();
+}).then(function() {
+    console.log('8')
+})
+
+setTimeout(function() {
+    console.log('9');
+    process.nextTick(function() {
+        console.log('10');
+    })
+    new Promise(function(resolve) {
+        console.log('11');
+        resolve();
+    }).then(function() {
+        console.log('12')
+    })
+})
+</code></pre>
+<ul>
+<li>
+<p>在<strong>node@8.10.0</strong>的执行分析</p>
+<ul>
+<li>首先执行第一轮宏任务/微任务
+<ul>
+<li>log(1)</li>
+<li>seTimeout 放入MicroTask EventQueue</li>
+<li>process 放入MiniTask EventQueue</li>
+<li>log(7) 将then回调放入MiniTask EventQueue</li>
+<li>setTimeout 放入MicroTask EventQueue</li>
+<li>第一轮宏任务执行完毕, 打印语句1, 7</li>
+<li>第一轮微任务开始执行, 此时微任务有队列(process, then回调)</li>
+<li>执行微任务, log(6) log(8)</li>
+<li>综上述: 第一轮结束, 输出结果1 7 6 8</li>
+<li>此时宏任务MicroTask Queue [setTimeout, setTimeout]</li>
+</ul>
+</li>
+<li>执行第二轮宏任务/微任务
+<ul>
+<li>log(2) 将process3放入MiniTaskQueue</li>
+<li>log(4) 将promise.then5回调放入MiniTaskQueue</li>
+<li>log(9) 将process10放入MiniTaskQueue</li>
+<li>log(11) 将promise.then12回调放入MiniTaskQueue</li>
+<li>宏任务执行完毕, 输出 2 4 9 11</li>
+<li>微任务队列此时 [process3, then5, process10, then12]</li>
+<li>执行微任务: log(3) log(10) log(5) log(12)</li>
+</ul>
+</li>
+<li>综上分析: 执行顺序[1,7,6,8,2,4,9,11,3,10,5,12]</li>
+</ul>
+</li>
+<li>
+<p>在<strong>node@12.1.0</strong>下执行结果分析</p>
+<ul>
+<li>第一轮宏任务/微任务
+<ul>
+<li>宏任务log(1), MicroTask.push(setTimeout2)</li>
+<li>MiniTask.push(process6)</li>
+<li>宏任务log(7) MiniTask.push(then8)</li>
+<li>宏任务 MicroTask.push(setTimeout9)</li>
+<li>第一轮此时宏任务执行完成, 微任务队列[process6, then8]</li>
+<li>执行微任务log(6) log(8)</li>
+<li>此时宏任务TaskQueue=[setTimtout2, setTimeout9]</li>
+</ul>
+</li>
+<li>执行宏任务setTimeout2
+<ul>
+<li>log(2) MiniTaskQueue.push(process3)</li>
+<li>log(4) MiniTaskQueue.push(then5)</li>
+<li>执行微任务 process3 log(3)</li>
+<li>执行微任务then5  log(5)</li>
+</ul>
+</li>
+<li>执行第二个宏任务setTimeout9
+<ul>
+<li>log(9) MiniTaskQueue.push(process10)</li>
+<li>log(11) MiniTaskQueue.push(then12)</li>
+<li>执行微任务 processlo log(10)</li>
+<li>执行微任务 then12 log(12)</li>
+</ul>
+</li>
+<li>综上分析执行顺序 [1,7,6,8,2,4,3,5,9,11,10,12]</li>
+</ul>
+</li>
+<li>
+<p>node环境下的事件监听依赖libuv与前端环境不完全相同，输出顺序可能会有误差</p>
+</li>
+</ul>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://vonconfidence.github.io/post/enginee_and_stack">
+                  <h3 class="post-title">
+                    引擎与运行时堆栈
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

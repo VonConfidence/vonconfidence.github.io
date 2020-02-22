@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Gridea 搭建自己的博客系统 | 我的fe生涯</title>
+<title>Function 与 Object的关系 | 我的fe生涯</title>
 <meta name="description" content="前端萌新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -91,87 +91,75 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">Gridea 搭建自己的博客系统</h2>
+            <h2 class="post-title">Function 与 Object的关系</h2>
             <div class="post-date">2020-02-22</div>
             
-              <div class="feature-container" style="background-image: url('https://vonconfidence.github.io/post-images/learnGridea.png')">
-              </div>
-            
             <div class="post-content">
-              <h3 id="gridea-搭建自己的博客系统">Gridea 搭建自己的博客系统</h3>
+              <h3 id="function-与-object的关系">Function 与 Object的关系</h3>
 <ol>
 <li>
-<p>Github创建仓库</p>
-<ul>
-<li>仓库名称设置为 <strong>账号名称.github.io</strong></li>
-<li>选择创建空仓库</li>
-<li><a href="https://gridea.dev/#started">安装gridea</a></li>
-</ul>
+<p>instanceof 运算原理</p>
+<pre><code class="language-js">//假设instanceof运算符左边是L，右边是R
+l instanceof R //instanceof运算时，通过判断L的原型链上是否存在R.prototype
+l.__proto__.__proto__ ..... === R.prototype ？ //如果存在返回true 否则返回false
+</code></pre>
+<p>instanceof 检测左侧实例的 <strong>proto</strong> 原型链上，是否存在右侧对象的 prototype 原型。</p>
 </li>
 <li>
-<p>gridea配置
-<img src="https://vonconfidence.github.io/post-images/1582305244298.png" alt="gridea"></p>
-<ul>
-<li>域名: Github Pages 对应的域名 如 https://vonconfidence.github.io 或者 confidence.fe</li>
-<li>仓库: 你的静态文件存放地址, 例如 <strong>账号名称.github.io</strong> (填写上面建立的仓库名称)</li>
-<li>分支: Github Pages对应的分支 (例如master)</li>
-<li>邮箱: 注册github时使用的邮箱</li>
-<li>token: git推送时需要使用的token, 用来向 Github 提交构建后的文件 <a href="https://link.zhihu.com/?target=https%3A//github.com/settings/tokens">Github personal access tokens</a>
-<ul>
-<li>建立你自己的 Personal access tokens 的时候，建议你只需要赋予 repo 的权利就可以了，这样可以减少你的 Token 出现泄漏后可能造成的风险</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://vonconfidence.github.io/post-images/1582305613339.jpg" alt="accessToken"></p>
+<p>图解构造器Function和Object的关系</p>
+<pre><code class="language-js">Function instanceof Object;//true
+Object instanceof Function;//true
+</code></pre>
+<p><img src="https://upload-images.jianshu.io/upload_images/6083454-ff2d1ed02e44ac84.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<pre><code class="language-js">//①构造器Function的构造器是它自身
+Function.constructor=== Function;//true
+
+//②构造器Object的构造器是Function（由此可知所有构造器的constructor都指向Function）
+Object.constructor === Function;//true
+
+//③构造器Function的__proto__是一个特殊的匿名函数function() {}
+console.log(Function.__proto__);//function() {}
+
+//④这个特殊的匿名函数的__proto__指向Object的prototype原型。
+Function.__proto__.__proto__ === Object.prototype//true
+
+//⑤Object的__proto__指向Function的prototype，也就是上面③中所述的特殊匿名函数
+Object.__proto__ === Function.prototype;//true
+Function.prototype === Function.__proto__;//true
+</code></pre>
 </li>
 <li>
-<p>配置好了，检测远程连接没有问题之后，Gridea 就成功和你的 Github Pages 连接了。</p>
-</li>
-<li>
-<p>重新回到主界面，点击左下角的同步，就可以将你的文章同步到你的个人 Blog 了，你可以访问<strong>账号名称.github.io</strong> 来看效果。</p>
+<p>当构造器Object和Function遇到instanceOf</p>
 </li>
 </ol>
-<h4 id="熟悉操作">熟悉操作</h4>
+<pre><code>- 所有的构造器的 constructor 都指向 Function
+
+- Function 的 prototype 指向一个特殊匿名函数，而这个特殊匿名函数的 __proto__ 指向 Object.prototype
+</code></pre>
+<h4 id="参考文章">参考文章</h4>
 <ol>
-<li>
-<p>菜单栏目</p>
-<p>菜单会在网页上标题下方显示，初始状态有四个菜单：首页、归档、标签、关于，在网页里可以找到他们的作用。
-<img src="https://vonconfidence.github.io/post-images/1582306079380.png" alt=""></p>
-</li>
-<li>
-<p>标签栏目</p>
-<ul>
-<li>标签栏目用于管理文章的标签。新建文章时直接在文章栏目添加即可，不必手动添加。</li>
-<li>当一个标签下没有文章时，标签不会自动移除，会出现删除选项，手动移除。</li>
-</ul>
-</li>
-<li>
-<p>主题栏目</p>
-<ul>
-<li>主题栏目主要是网站的设计。</li>
-<li>基础配置界面是关于网站样式的设计。默认含有四个主题，可前往官网预览，可以在这里下载其他主题。</li>
-</ul>
-</li>
-<li>
-<p>远程栏目
-项目推送到远程的配置</p>
-</li>
-</ol>
-<h4 id="参考">参考</h4>
-<ol>
-<li>https://zhuanlan.zhihu.com/p/64034679</li>
+<li>https://juejin.im/post/58358606570c35005e4142bd</li>
 </ol>
 
             </div>
             
               <div class="tag-container">
                 
-                  <a href="https://vonconfidence.github.io/tag/fe" class="tag">
-                    fe
+                  <a href="https://vonconfidence.github.io/tag/javascript" class="tag">
+                    javascript
                   </a>
                 
               </div>
             
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://vonconfidence.github.io/post/throttle_debounce">
+                  <h3 class="post-title">
+                    节流与防抖
+                  </h3>
+                </a>
+              </div>
             
 
             

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>隐式转换 | 我的fe生涯</title>
+<meta name="description" content="前端萌新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://vonconfidence.github.io/favicon.ico?v=1582367157557">
+<link rel="stylesheet" href="https://vonconfidence.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://vonconfidence.github.io">
+        <img src="https://vonconfidence.github.io/images/avatar.png?v=1582367157557" class="site-logo">
+        <h1 class="site-title">我的fe生涯</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      前端萌新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/VonConfidence" target="_blank">VonConfidence</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">隐式转换</h2>
+            <div class="post-date">2020-02-22</div>
+            
+            <div class="post-content">
+              <h4 id="隐式转换">隐式转换</h4>
+<ol>
+<li>
+<p>对象的隐式转换</p>
+<pre><code class="language-js">var a = {
+  valueOf() {
+    return 1;
+  },
+  toString() {
+    return '2';
+  }
+}
+
+a == 1 // true
+a === 1 // false
+a == '2' // false
+a === '2' // false
+
+Number(a) === 1  // true
+String(a) === '2' // true
+
+var b = { valueOf() { return 1; } }
+var c = { toString() { return '2'; } }
+
+Number(c) // 2
+String(b) // &quot;[object Object]&quot;
+</code></pre>
+<p>对普通对象来说，除非自行定义，否则toString()（Object.prototype.toString()）返回内部属性[[Class]]的值，如“[object Object]”。</p>
+<p>数组的默认toString()方法经过了重新定义，将所有单元字符串化以后再用“，”连接起来</p>
+<pre><code class="language-js">var a = [1,2,3];
+a.toString(); // &quot;1,2,3&quot;
+</code></pre>
+</li>
+<li>
+<p>JSON.stringify() 在将JSON对象序列化为字符串时也用到了ToString</p>
+<pre><code class="language-js">JSON.stringify( 42 ); // &quot;42&quot;
+JSON.stringify( &quot;42&quot; ); // &quot;&quot;42&quot;&quot; （含有双引号的字符串）
+JSON.stringify( null ); // &quot;null&quot;
+JSON.stringify( true ); // &quot;true&quot;
+</code></pre>
+<p>JSON.stringify(..)在对象中遇到undefined、function和symbol时会自动将其忽略，在数组中则会返回null（以保证单元位置不变）。</p>
+<p>(1)字符串、数字、布尔值和null的JSON.stringify(..)规则与ToString基本相同。</p>
+<p>(2)如果传递给JSON.stringify(..)的对象中定义了toJSON()方法，那么该方法会在字符串化前调用，以便将对象转化为安全的JSON值。</p>
+</li>
+<li>
+<p>parseInt</p>
+<pre><code class="language-js">parseInt( 1/0, 19 ); // 18 来自于N
+
+parseInt( 0.0000008 ); // 8 (&quot;8&quot; 来自于 &quot;8e-7&quot;)
+
+parseInt( parseInt, 16 ); // 15 (&quot;f&quot; 来自于 &quot;function..&quot;)
+
+parseInt( &quot;0x10&quot; ); // 16
+parseInt( &quot;103&quot;, 2 ); // 2
+</code></pre>
+</li>
+<li>
+<p>假值的相等情况</p>
+<pre><code class="language-js">// null 只与 undefined相等
+&quot;0&quot; == null; // false
+&quot;0&quot; == undefined; // false
+&quot;0&quot; == false; // true -- 晕！
+
+// NaN与任何都不相等
+&quot;0&quot; == NaN; // false
+&quot;0&quot; == 0; // true
+&quot;0&quot; == &quot;&quot;; // false
+
+false == null; // false
+false == undefined; // false
+
+false == NaN; // false
+
+// Number(false) === 0
+false == 0; // true -- 晕！
+
+// Number('') ===0
+false == &quot;&quot;; // true -- 晕！
+// Number([]) ===0
+false == []; // true -- 晕！
+
+false == {}; // false
+&quot;&quot; == null; // false
+&quot;&quot; == undefined; // false
+&quot;&quot; == NaN; // false
+&quot;&quot; == 0; // true -- 晕！
+&quot;&quot; == []; // true -- 晕！
+&quot;&quot; == {}; // false
+0 == null; // false
+0 == undefined; // false
+0 == NaN; // false
+0 == []; // true -- 晕！
+0 == {}; // false
+
+2 == [2]; // true
+&quot;&quot; == [null]; // true
+0 == &quot;\n&quot;; // true
+42 == &quot;43&quot;; // false
+&quot;foo&quot; == 42; // false
+&quot;true&quot; == true; // false
+42 == &quot;42&quot;; // true
+&quot;foo&quot; == [ &quot;foo&quot; ]; // true
+</code></pre>
+</li>
+<li>
+<p>终端情况</p>
+<pre><code class="language-js">[] == ![] // true
+
+// 分析
+Number([]) === 0
+![] === false
+
+0 == false // true
+</code></pre>
+</li>
+<li>
+<p>完整性检查</p>
+<pre><code class="language-js">&quot;0&quot; == false; // true
+false == 0; // true
+false == &quot;&quot;; // true
+false == []; // true
+&quot;&quot; == 0; // true
+&quot;&quot; == []; // true
+0 == []; // true
+</code></pre>
+</li>
+<li>
+<p>抽象关系比较</p>
+<ul>
+<li>a &lt; b中涉及的隐式强制类型转换不太引人注意，不过还是很有必要深入了解一下。
+比较双方首先调用ToPrimitive，<strong>如果结果出现非字符串</strong>，就根据ToNumber规则将双方强制类型转换为数字来进行比较。</li>
+<li>如果比较<strong>双方都是字符串</strong>，则按字母顺序来进行比较：</li>
+</ul>
+<pre><code class="language-js">var a = { b: 42 };
+var b = { b: 43 };
+a &lt; b; // false
+a == b; // false
+a &gt; b; // false
+a &lt;= b; // true
+a &gt;= b; // true
+
+// 因为a是[object Object]，b也是[object Object]，所以按照字母顺序a&lt;b并不成立。
+</code></pre>
+</li>
+</ol>
+<h4 id="toprimitive">ToPrimitive</h4>
+<p>ToPrimitive() 方法转换成原始类型方法。js中的原始类型：</p>
+<pre><code>Null: null值.
+Undefined: undefined 值.
+Number: 所有的数字类型，例如0,1,3.14等 以及NaN, 和 Infinity.
+Boolean: 两个值true和false.
+String: 所有的字符串，例如’abc’和’’.
+其他的都是’非原始’的，像Array,Function,Object等。
+</code></pre>
+<ol>
+<li>参考: https://juejin.im/entry/584918612f301e005716add6</li>
+</ol>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://vonconfidence.github.io/post/function-object-">
+                  <h3 class="post-title">
+                    Function 与 Object的关系
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
